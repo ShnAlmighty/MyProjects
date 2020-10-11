@@ -1,8 +1,8 @@
 import mysql.connector
-
 from os import system,name
-
 import time
+from PIL import Image,ImageTk
+from tkinter import Tk,Button,Label,Entry,Text
 
 def clear():
  _=system('cls')
@@ -590,7 +590,6 @@ def modify():
          print("Table does not exists!")
          time.sleep(1)
 
-
 def bill():
            clear()
            bot = ""
@@ -671,7 +670,10 @@ def bill():
                 if not item_namee :
                     print("Invalid Item Id")
                     exit()
-            items = items + "\n" + item_namee
+            if(items==""):
+              items = item_namee
+            else:
+              items = items + "\n" + item_namee
             #b=b+1
             mycursor.execute("SHOW TABLES LIKE 'bill'")
             res = mycursor.fetchone()
@@ -688,7 +690,10 @@ def bill():
               mydb.commit()
 
             choose_quantity = int(input("Enter quantity: "))
-            qty = qty + "\n" + str(choose_quantity)
+            if(qty==""):
+              qty=str(choose_quantity)
+            else:
+              qty = qty + "\n" + str(choose_quantity)
             #b2=b2+1
             sql = "SELECT price FROM item WHERE id = %s"
             val = (choose_item,)
@@ -696,7 +701,10 @@ def bill():
             price_item = 0
             for x in mycursor:
                 price_item = x[0]
-            prices = prices + "\n " + str(price_item)
+            if(prices==""):
+              prices = str(price_item)
+            else:
+              prices = prices + "\n" + str(price_item)
             #b1=b1+1
             bil = int(price_item)*choose_quantity
             #b = b+1
@@ -707,55 +715,222 @@ def bill():
             #mycursor.execute(sql11,val11)
             #mydb.commit()
             inm = input("Do you want to add more?(y/n) ")
-            if(inm == "n" or inm == "N"):
-             loop = 1
-            else: clear()
+            if(inm == "Y" or inm == "y"):
+              clear()
+            else:
+              loop = 1
+              inv1 = "***********************************************************************************************************************\n \t\t\t\t\t\t CUSTOMER BILL:\n***********************************************************************************************************************"
+              inv1 = inv1+"\nNAME:"+str(customer)+"\nITEMS:"+str(items)+"\nQUANTITY:"+str(qty)+"\nPRICES:"+str(prices)+"\nTOTAL:"+str(total_bill)+"\n"
+              print(inv1)
+              hj=1
+              while(hj==1):
+                qrcode = input("Show QR Code for UPI payment(y/Y)?")
+                if(qrcode == "Y" or qrcode == "y"):
+                  payment = Tk()
+                  im = ImageTk.PhotoImage(Image.open("code.jpeg"))
+                  paymentCode = Label(payment,image=im)
+                  paymentCode.grid(row=0,column=0)
+                  payment.mainloop()
+                authentica = input("Transaction Complete(y/n)?")
+                if(authentica is not "y" or authentica is not "Y" ):
+                  top = input("Do you want to cancel transaction?")
+                  if(top == "y" or top == "Y"):
+                    hj=0 
+                elif(authentica == "y" or authentica == "Y"): 
+                  sqlo = "INSERT INTO bill(cust_name,item_name,quantity,price,tot,turn) VALUES (%s,%s,%s,%s,%s,%s)"
+                  valo = (customer,items,qty,prices,total_bill,int(appear)+1)
+                  mycursor.execute(sqlo,valo)
+                  mydb.commit()
+                  invoice = open("bill.txt","wt")
+                  invoice_log = open("billlog.txt","at")
+                  inv = "***********************************************************************************************************************\n \t\t\t\t\t\t CUSTOMER BILL:\n***********************************************************************************************************************"
+                  inv = inv+"\nNAME:"+str(customer)+"\nITEMS:"+str(items)+"\nQUANTITY:"+str(qty)+"\nPRICES:"+str(prices)+"\nTOTAL:"+str(total_bill)+"\n"
+                  invoice.write(inv)
+                  invoice_log.write(inv)
 
-           sqlo = "INSERT INTO bill(cust_name,item_name,quantity,price,tot,turn) VALUES (%s,%s,%s,%s,%s,%s)"
-           valo = (customer,items,qty,prices,total_bill,int(appear)+1)
-           mycursor.execute(sqlo,valo)
-           mydb.commit()
-           invoice = open("bill.txt","wt")
-           invoice_log = open("billlog.txt","at")
-           inv = "***********************************************************************************************************************\n \t\t\t\t\t\t CUSTOMER BILL:\n***********************************************************************************************************************"
-           #inv = inv+"\nNAME:"+str(customer)+"\nITEMS:\n"+str(items)+"\tQUANTITY:\n"+str(qty)+"\tPRICES:\n"+str(prices)+"\tTOTAL:\n"+str(total_bill)+"\n"
-           inv = inv+"\nNAME:"+str(customer)+"\tITEMS:"+"\tQUANTITY:"+"\tPRICES:"+"\n\t"+str(items)+"\t"+str(qty)+"\t"+str(prices)+"TOTAL:\n"+str(total_bill)+"\n"
-           invoice.write(inv)
-           invoice_log.write(inv)
+                  clear()
+                  print("***********************************************************************************************************************")
+                  print("\t\t\t\t\t\t CUSTOMER BILL:")
+                  print("***********************************************************************************************************************")
+                  sqln = "SELECT * FROM bill WHERE cust_name = %s AND turn = %s"
+                  valn = (customer,int(appear)+1)
+                  mycursor.execute(sqln,valn)
+                  
+                  for x in mycursor:
+                        print("\n-Customer Name: ",x[0],"\n-Item: ",x[1],"\n-Quantity: ",x[2],"\n-Price: ",x[3],"\n\tTOTAL BILL : ",x[4])
+                  print("***********************************************************************************************************************")
+                  wantto = input("\nDo you want to see Bill Log?(y/n)")
+                  if(wantto == "y" or wantto == "Y"):
+                    clear()
+                    print("***********************************************************************************************************************")
+                    print("\t\t\t\t\t\tBILL LOG:")
+                    print("***********************************************************************************************************************")
+                    mycursor.execute("SELECT * FROM bill")
+                    for x in mycursor:
+                        print("\n-Customer Name: ",x[0],"\n-Item:",x[1],"\n-Quantity:",x[2],"\n-Price: ",x[3],"\n\tTOTAL BILL : ",x[4])
+                        print("***********************************************************************************************************************")
+# def bill():
+#            clear()
+#            bot = ""
+#            appear = 0
+#            print("***********************************************************************************************************************")
+#            print("\t\t\t\t\t\tBILLING COUNTER")
+#            print("***********************************************************************************************************************")
+#            m = input("Enter Mobile Number of the Customer: ")
+#            s = "SELECT number FROM customers"
+#            #v = (m,)
+#            mycursor.execute(s)
+#            check_numb = ""
+#            for t in mycursor:
+#              if int(m) == t[0]:  
+#                check_numb = t[0]
+#                #print(check_numb)
+#              #else : check_numb = ""
+#            customer,item_namee = "",""
+#            if not check_numb:
+#                new_user = 1
+#                take_ans = input("New Customer: Do You want to Sign Up?(y/n) ")
+#                if(take_ans == "y" or take_ans == "Y"):
+#                    dat()
+#                    sq = "SELECT name FROM customers WHERE number = %s"
+#                    vq = (m,)
+#                    mycursor.execute(sq,vq)
+#                    for t in mycursor:
+#                        customer = t[0]
+#                else:
+#                    customer_name = input("Enter your Name: ")
+#                    customer = customer_name
+#                time.sleep(1)
+#            else:
+#             sql = "SELECT name FROM customers WHERE number = %s"
+#             val = (m,)
+#             mycursor.execute(sql,val)            
+#             for x in mycursor:  
+#               print("\t\t\t\t WELCOME:",x[0])
+#               time.sleep(1)
+#               customer = x[0]
+#            loop = 0
+#            total_bill = 0
+#            items,qty,prices="","",""  
+#            while loop == 0 :
+#             clear() 
+#             print("***********************************************************************************************************************")
+#             print("\t\t\t\t\t\tITEM SELECTION:")
+#             print("***********************************************************************************************************************")
+#             mycursor.execute("SELECT * FROM item")
+
+#             for x in mycursor: 
+#                 #print("***********************************************************************************************************************")
+#                 print("\n-ID : ",x[0],"\n-Item Name :",x[1],"\n-Price :",x[2],"\n-Stock: ",x[3])
+#                 print("***********************************************************************************************************************")
+
+#             print("***********************************************************************************************************************")
+#             choose_item = input("Choose item: ")
+#            # mys = "SELECT "
+#             if choose_item.isalpha():
+#                 item_namee = choose_item
+#                 sqll = "SELECT id FROM item WHERE name = %s"
+#                 vall = (choose_item,)
+#                 mycursor.execute(sqll,vall)
+#                 for x in mycursor:
+#                     #choose_item = x[0]
+#                     bot = x[0]
+#                 if not bot:
+#                     print("Invalid Item Selection!!")
+#                     exit()
+#                 else:
+#                     choose_item = bot
+#             elif choose_item.isnumeric():
+#                 sqlll = "SELECT name FROM item WHERE id = %s"
+#                 valll = (choose_item,)
+#                 mycursor.execute(sqlll,valll)
+#                 for x in mycursor:
+#                     item_namee = x[0]
+#                 if not item_namee :
+#                     print("Invalid Item Id")
+#                     exit()
+#             items = items + "\n" + item_namee
+#             #b=b+1
+#             mycursor.execute("SHOW TABLES LIKE 'bill'")
+#             res = mycursor.fetchone()
+#             if res :
+#              sqld = "SELECT MAX(turn) FROM bill WHERE cust_name = %s "
+#              vald = (customer,)
+#              mycursor.execute(sqld,vald)
+#              for y in mycursor:
+#                if y[0] is not None:
+#                 appear = y[0]
+#                else: appear = 0
+#             else:
+#               mycursor.execute("CREATE TABLE IF NOT EXISTS bill(cust_name VARCHAR(255),item_name VARCHAR(255),quantity VARCHAR(255),price VARCHAR(255),tot FLOAT, turn INT) ")
+#               mydb.commit()
+
+#             choose_quantity = int(input("Enter quantity: "))
+#             qty = qty + "\n" + str(choose_quantity)
+#             #b2=b2+1
+#             sql = "SELECT price FROM item WHERE id = %s"
+#             val = (choose_item,)
+#             mycursor.execute(sql,val)
+#             price_item = 0
+#             for x in mycursor:
+#                 price_item = x[0]
+#             prices = prices + "\n " + str(price_item)
+#             #b1=b1+1
+#             bil = int(price_item)*choose_quantity
+#             #b = b+1
+#             total_bill = total_bill+bil
+#             #bil1=str(bil)
+#             #sql11 = "INSERT INTO bill (cust_name,item_name,quantity,price) VALUES (%s,%s,%s,%s)"
+#             #val11 = (customer,item_namee,choose_quantity,price_item,)
+#             #mycursor.execute(sql11,val11)
+#             #mydb.commit()
+#             inm = input("Do you want to add more?(y/n) ")
+#             if(inm == "n" or inm == "N"):
+#              loop = 1
+#             else: clear()
+
+#            sqlo = "INSERT INTO bill(cust_name,item_name,quantity,price,tot,turn) VALUES (%s,%s,%s,%s,%s,%s)"
+#            valo = (customer,items,qty,prices,total_bill,int(appear)+1)
+#            mycursor.execute(sqlo,valo)
+#            mydb.commit()
+#            invoice = open("bill.txt","wt")
+#            invoice_log = open("billlog.txt","at")
+#            inv = "***********************************************************************************************************************\n \t\t\t\t\t\t CUSTOMER BILL:\n***********************************************************************************************************************"
+#            #inv = inv+"\nNAME:"+str(customer)+"\nITEMS:\n"+str(items)+"\tQUANTITY:\n"+str(qty)+"\tPRICES:\n"+str(prices)+"\tTOTAL:\n"+str(total_bill)+"\n"
+#            inv = inv+"\nNAME:"+str(customer)+"\tITEMS:"+"\tQUANTITY:"+"\tPRICES:"+"\n\t"+str(items)+"\t"+str(qty)+"\t"+str(prices)+"TOTAL:\n"+str(total_bill)+"\n"
+#            invoice.write(inv)
+#            invoice_log.write(inv)
            
-           """
-           sqlo = "INSERT INTO bill(cust_name,item_name,quantity,price,tot,turn) VALUES (%s,%s,%s,%s,%s,%s)"
-           valo = (customer,items,qty,prices,total_bill,int(appear)+1)
-           """
-           clear()
-           print("***********************************************************************************************************************")
-           print("\t\t\t\t\t\t CUSTOMER BILL:")
-           print("***********************************************************************************************************************")
-           sqln = "SELECT * FROM bill WHERE cust_name = %s AND turn = %s"
-           valn = (customer,int(appear)+1)
-           mycursor.execute(sqln,valn)
-           for x in mycursor:
-                #print("***********************************************************************************************************************")
-                print("\n-Customer Name: ",x[0],"\n-Item: ",x[1],"\n-Quantity: ",x[2],"\n-Price: ",x[3],"\n\tTOTAL BILL : ",x[4])
-           print("***********************************************************************************************************************")
+#            """
+#            sqlo = "INSERT INTO bill(cust_name,item_name,quantity,price,tot,turn) VALUES (%s,%s,%s,%s,%s,%s)"
+#            valo = (customer,items,qty,prices,total_bill,int(appear)+1)
+#            """
+#            clear()
+#            print("***********************************************************************************************************************")
+#            print("\t\t\t\t\t\t CUSTOMER BILL:")
+#            print("***********************************************************************************************************************")
+#            sqln = "SELECT * FROM bill WHERE cust_name = %s AND turn = %s"
+#            valn = (customer,int(appear)+1)
+#            mycursor.execute(sqln,valn)
+#            for x in mycursor:
+#                 #print("***********************************************************************************************************************")
+#                 print("\n-Customer Name: ",x[0],"\n-Item: ",x[1],"\n-Quantity: ",x[2],"\n-Price: ",x[3],"\n\tTOTAL BILL : ",x[4])
+#            print("***********************************************************************************************************************")
 
-           wantto = input("\nDo you want to see Bill Log?(y/n)")
-           if(wantto == "y" or wantto == "Y"):
-            clear()
-            print("***********************************************************************************************************************")
-            print("\t\t\t\t\t\tBILL LOG:")
-            print("***********************************************************************************************************************")
+#            wantto = input("\nDo you want to see Bill Log?(y/n)")
+#            if(wantto == "y" or wantto == "Y"):
+#             clear()
+#             print("***********************************************************************************************************************")
+#             print("\t\t\t\t\t\tBILL LOG:")
+#             print("***********************************************************************************************************************")
             
-            mycursor.execute("SELECT * FROM bill")
-            for x in mycursor:
-                 #print("***********************************************************************************************************************")
-                 print("\n-Customer Name: ",x[0],"\n-Item:",x[1],"\n-Quantity:",x[2],"\n-Price: ",x[3],"\n\tTOTAL BILL : ",x[4])
-                 print("***********************************************************************************************************************")
+#             mycursor.execute("SELECT * FROM bill")
+#             for x in mycursor:
+#                  #print("***********************************************************************************************************************")
+#                  print("\n-Customer Name: ",x[0],"\n-Item:",x[1],"\n-Quantity:",x[2],"\n-Price: ",x[3],"\n\tTOTAL BILL : ",x[4])
+#                  print("***********************************************************************************************************************")
 
-             #print("***********************************************************************************************************************")
-
-            
-            
+#              #print("***********************************************************************************************************************")
 
 def item():
     fnloop = 0
