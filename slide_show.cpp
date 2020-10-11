@@ -1,3 +1,9 @@
+/*
+This program takes attributes of given number of photos such as 
+picture details and alignment and groups these photos in such a 
+way that photos with similar attributes are gathered together
+*/
+
 #include<iostream>
 using namespace std;
 //#include<windows.h>
