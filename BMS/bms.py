@@ -23,15 +23,6 @@ mycursor = mydb.cursor()
 #mycursor.execute("ALTER TABLE customers ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY")
 
 def authenticate():
-    #mycursor.execute("DROP TABLE user1")
-    #mydb.commit()
-    #sql = "CREATE TABLE IF NOT EXISTS user1( username VARCHAR(255) UNIQUE,password VARCHAR(255) UNIQUE)"
-    #mycursor.execute(sql)
-    #mydb.commit()
-    #sql = "INSERT INTO user1(username,password) VALUES (%s,%s)"
-    #val = ('ShnAlmighty','getgod')
-    #mycursor.execute(sql,val)
-    #mydb.commit()
     clear()
     print("\t\t\t\t -----------------------------------------------")
     print("\t\t\t\t|                 Login Page:                   | ")
