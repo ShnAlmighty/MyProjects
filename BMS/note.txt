@@ -1,0 +1,3 @@
+BMS guest login credentials 
+username: ShnAlmighty
+password: getgod
