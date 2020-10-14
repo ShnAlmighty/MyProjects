@@ -106,15 +106,6 @@ def setmain():
       admin.mainloop()
 
 def authenticate():
-    #mycursor.execute("DROP TABLE user1")
-    #mydb.commit()
-    #sql = "CREATE TABLE IF NOT EXISTS user1( username VARCHAR(255) UNIQUE,password VARCHAR(255) UNIQUE)"
-    #mycursor.execute(sql)
-    #mydb.commit()
-    #sql = "INSERT INTO user1(username,password) VALUES (%s,%s)"
-    #val = ('ShnAlmighty','getgod')
-    #mycursor.execute(sql,val)
-    #mydb.commit()
     global authuser
     authuser=1
     while(authuser==1):
