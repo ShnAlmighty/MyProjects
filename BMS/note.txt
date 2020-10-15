@@ -1,3 +1,4 @@
 BMS guest login credentials 
 username: ShnAlmighty
 password: getgod
+MySQL is needed to run this application
