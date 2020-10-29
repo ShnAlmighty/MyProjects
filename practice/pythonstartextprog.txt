@@ -1,0 +1,23 @@
+import subprocess    
+
+path_to_notepad = 'C:\\Windows\\System32\\notepad.exe'
+path_to_file = 'C:\\Users\\Desktop\\hello.txt'
+
+subprocess.call([path_to_notepad, path_to_file])
+
+import subprocess
+
+p = subprocess.Popen(["notepad.exe", fileName])
+# ... do other things while notepad is running
+returncode = p.wait() # wait for notepad to exit
+
+import os
+def openFile():
+    fileName = listbox_1.get(ACTIVE)
+    os.system("start " + fileName)
+If you really want to use a certain program, such as notepad, you can do it like this:
+
+import os
+def openFile():
+    fileName = listbox_1.get(ACTIVE)
+    os.system("notepad.exe " + fileName)
