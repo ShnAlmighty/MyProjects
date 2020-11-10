@@ -1,6 +1,13 @@
 import speech_recognition as sr 
 import webbrowser
 import sys
+import pyttsx3
+
+def SpeakText(command): 
+    engine = pyttsx3.init() 
+    engine.say(command)  
+    engine.runAndWait()
+
 r = sr.Recognizer()    
 
 def work(result,name):
@@ -13,11 +20,16 @@ def work(result,name):
             if(i is not 0):
                 serc=serc+(query[i])
         search = "http://www.google.com/search?q="+serc
+        u = "Opening in web browser"
+        SpeakText(u)
         webbrowser.open(search)
     elif(result == "close" or result == "bye" or result == "bye bye" or result == "exit"):
         print("Okay","\nBye", name, "\nGoing to sleep")
+        io = "Okay"+"\nBye"+name+ "\nGoing to sleep"
+        SpeakText(io)
         sys.exit()
     else:
+        SpeakText(result)
         print(name,"you said: ",result)
 
 turn = 0
