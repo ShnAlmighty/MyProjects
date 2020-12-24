@@ -4,15 +4,11 @@ import webbrowser
 
 def contents(fileco):
     global insert
-    insert = """ 
-Write or paste the code here.
+    insert = """ Write your code here within these string literals...
 """
     fch = open(fileco,"w")
     for i in range(len(insert)):
         fch.write(insert[i])
-
-def openWeb():
-  webbrowser.open("https://mysmremote.in/adminaroon123.php")
 
 def main():
     global content,filename,location
@@ -22,10 +18,15 @@ def main():
     # ch = os.chdir("../../../Documents/Arduino")
     ch = location
     ser = 0
+    check_fileno = 0
     for file in os.listdir(ch):
         if(file.endswith(".ino")):
             ser=ser+1
+            check_fileno = check_fileno +1
             filename.append(file)
+    if(check_fileno == 0):
+      newFIle = open("yourfilename.ino","x") # Tool was used to create ardunio files hence the .ino extenstion but you can add any extention you want.
+      filename.append("yourfilename.ino")
     global menu
     menu = Tk()
     global mframe
@@ -39,11 +40,6 @@ def main():
         buttons.append(Button(mframe,text=filename[i],command=lambda ind=i: choose(ind)))
         buttons[i].grid(row=(i+1),column=0)
         buttons[i].config(font=("Times New Roman",13))
-    answ = messagebox.showinfo("showinfo","Kindly go to admin website to get customer details before going forward")
-    if(answ == "ok"):
-      openWeb()
-    else:
-      openWeb()
     menu.mainloop()
 
 def choose(a):
