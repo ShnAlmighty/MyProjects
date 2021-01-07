@@ -7,7 +7,7 @@ from datetime import date
 
 contact = input("Enter the contact name you want to message")
 text = input("Enter the message:\n")
-alarm = input("Enter the time at which you want to send this message(hh:mm:ss)")
+alarm = input("Enter the time at which you want to send this message(hh:mm:ss)") # For sending message at 1:45 am, Enter 13:45:00
 setTime = datetime.datetime.now().strftime("%H:%M:%S")
 
 while(setTime != alarm):
