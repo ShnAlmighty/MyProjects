@@ -1,0 +1,76 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "change me",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "playerBio",
+          "slots": [
+            {
+              "name": "player",
+              "type": "playerNames"
+            }
+          ],
+          "samples": [
+            "who is {player}",
+            "{player}",
+            "tell me about {player}"
+          ]
+        },
+        {
+          "name": "AMAZON.NoIntent",
+          "samples": []
+        }
+      ],
+      "types": [
+        {
+          "values": [
+            {
+              "name": {
+                "value": "suresh raina"
+              }
+            },
+            {
+              "name": {
+                "value": "yuvraj singh"
+              }
+            },
+            {
+              "name": {
+                "value": "gautam gambhir"
+              }
+            },
+            {
+              "name": {
+                "value": "rohit sharma"
+              }
+            },
+            {
+              "name": {
+                "value": "virat kohli"
+              }
+            }
+          ],
+          "name": "playerNames"
+        }
+      ]
+    }
+  },
+  "version": "3"
+}
